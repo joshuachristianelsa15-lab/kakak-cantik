@@ -1,247 +1,843 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Clone</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Donasi Gemas untuk Kakak Tersayang ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --primary: #ff758c;
+      --primary-hover: #ff5e79;
+      --secondary: #ff7eb3;
+      --bg-gradient: linear-gradient(135deg, #fff0f5 0%, #ffe4ec 50%, #f3e8ff 100%);
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --text-dark: #4a3b4e;
+      --text-muted: #8c758f;
+      --bca: #0060af;
+      --gopay: #00a5cf;
+      --dana: #118eea;
+      --shopeepay: #ee4d2d;
+    }
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Floating background sparkles */
+    .sparkle-bg {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+      animation: floatSparkle 6s infinite ease-in-out;
+    }
+
+    @keyframes floatSparkle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-18px) rotate(15deg); }
+    }
+
+    .main-wrapper {
+      width: 100%;
+      max-width: 680px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header Profile Card */
+    .hero-card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(255, 117, 140, 0.15);
+      border: 3px solid #ffffff;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffe3ec;
+      color: #e03268;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd1dc, #ff9ebb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      box-shadow: 0 8px 20px rgba(255, 117, 140, 0.3);
+      border: 4px solid #fff;
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 22px;
+      height: 22px;
+      background: #4cd964;
+      border-radius: 50%;
+      border: 3px solid #fff;
+    }
+
+    h1 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.85rem;
+      color: #3b2a3f;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.96rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Settings Toggle Bar */
+    .settings-bar {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    .btn-edit-toggle {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid #ffccd5;
+      color: #d13d6a;
+      padding: 8px 16px;
+      border-radius: 14px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(255, 117, 140, 0.1);
+    }
+
+    .btn-edit-toggle:hover {
+      background: #ffe9f0;
+      transform: translateY(-2px);
+    }
+
+    /* Modal / Form Edit */
+    .edit-panel {
+      display: none;
+      background: #fff;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 24px;
+      border: 2px dashed #ff8fa3;
+      box-shadow: 0 10px 24px rgba(255, 143, 163, 0.15);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .edit-panel.active {
+      display: block;
+    }
+
+    .edit-panel h3 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.15rem;
+      color: #ff5e79;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 540px) {
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .form-group input {
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e2d2e2;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.9rem;
+      color: #333;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #ff758c;
+      box-shadow: 0 0 0 3px rgba(255, 117, 140, 0.15);
+    }
+
+    /* Accounts Grid */
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 580px) {
+      .accounts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .account-card {
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      overflow: hidden;
+    }
+
+    .account-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(255, 117, 140, 0.16);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .provider-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fredoka', cursive;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .provider-tag .icon-pill {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #fff;
+    }
+
+    /* Provider Colors */
+    .card-bca {
+      border-color: #e1edfc;
+    }
+    .card-bca .icon-pill {
+      background: var(--bca);
+    }
+    .card-bca .provider-tag {
+      color: var(--bca);
+    }
+
+    .card-gopay {
+      border-color: #e0f6fc;
+    }
+    .card-gopay .icon-pill {
+      background: var(--gopay);
+    }
+    .card-gopay .provider-tag {
+      color: var(--gopay);
+    }
+
+    .card-dana {
+      border-color: #e3f2fd;
+    }
+    .card-dana .icon-pill {
+      background: var(--dana);
+    }
+    .card-dana .provider-tag {
+      color: var(--dana);
+    }
+
+    .card-shopeepay {
+      border-color: #ffeae6;
+    }
+    .card-shopeepay .icon-pill {
+      background: var(--shopeepay);
+    }
+    .card-shopeepay .provider-tag {
+      color: var(--shopeepay);
+    }
+
+    .card-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f7f3f8;
+      color: #7b687f;
+    }
+
+    .card-body {
+      background: #fcf9fb;
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border: 1px dashed #eedce3;
+    }
+
+    .number-display {
+      font-family: 'Fredoka', monospace, sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #2b2b2b;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    .name-display {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-copy {
+      width: 100%;
+      border: none;
+      padding: 12px;
+      border-radius: 14px;
+      background: #fff0f5;
+      color: #d13d6a;
+      font-family: 'Fredoka', cursive;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .btn-copy:hover {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 117, 140, 0.3);
+    }
+
+    .btn-copy:active {
+      transform: scale(0.97);
+    }
+
+    /* Actions Section */
+    .interaction-card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(255, 117, 140, 0.15);
+      border: 3px solid #ffffff;
+      margin-bottom: 24px;
+    }
+
+    .interaction-card h2 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.4rem;
+      color: #3b2a3f;
+      margin-bottom: 6px;
+    }
+
+    .interaction-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      min-height: 56px;
+      flex-wrap: wrap;
+    }
+
+    .btn-celebrate {
+      background: linear-gradient(135deg, #ff6584 0%, #ff8ea5 100%);
+      color: #fff;
+      border: none;
+      font-family: 'Fredoka', cursive;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 16px 32px;
+      border-radius: 999px;
+      box-shadow: 0 8px 20px rgba(255, 101, 132, 0.35), 0 3px 0 #d94966;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-celebrate:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 26px rgba(255, 101, 132, 0.45), 0 4px 0 #d94966;
+    }
+
+    .btn-celebrate:active {
+      transform: translateY(2px) scale(0.98);
+      box-shadow: 0 4px 10px rgba(255, 101, 132, 0.2), 0 1px 0 #d94966;
+    }
+
+    .btn-runaway {
+      background: #f1ecf1;
+      color: #8c7a91;
+      border: 2px dashed #d5cbd7;
+      font-family: 'Fredoka', cursive;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 14px 26px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.15s ease-out;
+      user-select: none;
+    }
+
+    /* Terms of Love Guarantee */
+    .terms-box {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      padding: 20px 24px;
+      border: 1.5px solid #ffdeeb;
+      margin-bottom: 24px;
+    }
+
+    .terms-box h4 {
+      font-family: 'Fredoka', cursive;
+      font-size: 1.05rem;
+      color: #e03268;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .terms-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: #634b67;
+    }
+
+    .terms-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2f2533;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar fixed-top navbar-expand-lg bg-purple" data-bs-theme="dark">
-        <div class="container py-2 px-4">
-            <a href="#" class="navbar-brand mb-0 h1">
-                <img class="img-fluid" src="assets/images/logo-white.svg" alt="logo" style="width: 40px;">
-            </a>
+  <!-- Sparkles -->
+  <div class="sparkle-bg" style="top: 8%; left: 8%; font-size: 1.8rem;">✨</div>
+  <div class="sparkle-bg" style="top: 20%; right: 10%; font-size: 2.2rem; animation-delay: 1.5s;">💖</div>
+  <div class="sparkle-bg" style="top: 65%; left: 6%; font-size: 2rem; animation-delay: 3s;">🎀</div>
+  <div class="sparkle-bg" style="top: 80%; right: 8%; font-size: 1.6rem; animation-delay: 2s;">🌸</div>
 
-            <button type="button" class="navbar-toggler"
-                data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="offcanvas offcanvas-end bg-purple" id="offcanvasNavbar">
-                <div class="offcanvas-header pb-0 px-4">
-                    <h5 class="offcanvas-title text-white" id="offcanvasNavbarLabel">Bootstrap</h5>
-                    <button type="button" class="btn-close"
-                        data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-
-                <div class="offcanvas-body pt-0 px-4">
-                    <hr class="d-lg-none text-white-50">
-
-                    <ul class="navbar-nav flex-row flex-wrap">
-                        <li class="nav-item col-6 col-lg-auto"><a href="#" class="nav-link active">Docs</a></li>
-                        <li class="nav-item col-6 col-lg-auto"><a href="#" class="nav-link">Examples</a></li>
-                        <li class="nav-item col-6 col-lg-auto"><a href="#" class="nav-link">Icons</a></li>
-                        <li class="nav-item col-6 col-lg-auto"><a href="#" class="nav-link">Themes</a></li>
-                        <li class="nav-item col-6 col-lg-auto"><a href="#" class="nav-link">Blog</a></li>
-                    </ul>
-
-                    <hr class="d-lg-none text-white-50">
-
-                    <!-- Social Media -->
-                    <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
-                        <li class="nav-item col-6 col-lg-auto">
-                            <a href="#" class="nav-link active">
-                                <i class="bi-github"></i><small class="ms-2 d-lg-none">Github</small>
-                            </a>
-                        </li>
-                        <li class="nav-item col-6 col-lg-auto">
-                            <a href="#" class="nav-link active">
-                                <i class="bi-twitter"></i><small class="ms-2 d-lg-none">Twitter</small>
-                            </a>
-                        </li>
-                        <li class="nav-item col-6 col-lg-auto">
-                            <a href="#" class="nav-link active">
-                                <i class="bi-slack"></i><small class="ms-2 d-lg-none">Slack</small>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Konten berikutnya akan ditambahkan setelah ini -->
-
-<!-- Main -->
-<div class="bg-light mt-5" id="main">
-    <div class="container py-5 px-4">
-        <div class="row">
-            <div class="col-md-5 order-md-2">
-                <img class="img-fluid"
-                     src="assets/images/main.svg"
-                     alt="main logo">
-            </div>
-
-            <div class="col-md-7 order-md-1">
-                <h1 class="mt-4 display-3">
-                    Build fast, responsive sites with Bootstrap
-                </h1>
-
-                <p class="fs-5 mt-3">
-                    Quickly design and customize responsive mobile-first
-                    sites with Bootstrap, the world's most popular
-                    front-end open source toolkit, featuring Sass
-                    variables and mixins, responsive grid system,
-                    extensive prebuilt components, and powerful
-                    JavaScript plugins.
-                </p>
-
-                <div class="d-flex flex-column flex-md-row">
-                    <button type="button"
-                        class="btn bg-purple text-white btn-lg mb-3 me-md-3 px-4 py-3">
-                        Get Started
-                    </button>
-
-                    <button type="button"
-                        class="btn btn-outline-dark btn-lg mb-3 px-4 py-3">
-                        Download
-                    </button>
-                </div>
-
-                <div class="text-muted">
-                    Currently <strong>v5.3.0-alpha2.</strong>
-                    · <a href="#">v4.6.x docs</a>
-                    · <a href="#">All releases</a>
-                </div>
-            </div>
-        </div>
+  <div class="main-wrapper">
+    
+    <!-- Profile & Header -->
+    <div class="hero-card">
+      <div class="badge-pill">
+        <span>💝</span> Portal Bantuan Kasih Sayang
+      </div>
+      <div class="avatar-wrapper">
+        🥺
+        <div class="status-badge" title="Siap Menerima Rezeki"></div>
+      </div>
+      <h1>Halo Kakak Cantik & Baik Hati!</h1>
+      <p class="subtitle">
+        Selamat datang di portal donasi khusus kakak tercinta. Adik yang lucu ini sedang butuh asupan jajan & transferan cinta. Tinggal salin nomor di bawah ini ya! ✨
+      </p>
     </div>
-</div>
 
-<!-- Bootstrap Icons -->
-<div id="bs-icons">
-    <div class="container py-5 px-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <i class="bi bi-subtract fs-2 bg-warning py-2 px-3 rounded-3 text-white"></i>
-                </div>
-
-                <h2 class="display-5 mb-3">
-                    Personalize it with Bootstrap Icons
-                </h2>
-
-                <p class="fs-5">
-                    <a href="#">Bootstrap Icons</a> is an open source SVG icon
-                    library featuring over 1,800 glyphs, with more added every
-                    release. They're designed to work in any project, whether
-                    you use Bootstrap itself or not. Use them as SVGs or icon
-                    fonts--both options give you vector scaling and easy
-                    customization via CSS.
-                </p>
-
-                <a class="icon-link icon-link-hover lead fw-semibold mb-5" href="#">
-                    Get Bootstrap Icons
-                    <i class="bi bi-arrow-right mb-2"></i>
-                </a>
-            </div>
-
-            <div class="col-lg-6">
-                <img class="img-fluid"
-                     src="assets/images/bs-icons.png"
-                     alt="Bootstrap Icons">
-            </div>
-        </div>
+    <!-- Edit Settings Toggle -->
+    <div class="settings-bar">
+      <button class="btn-edit-toggle" id="btnToggleSettings">
+        <span>✏️</span> Ubah Data / Nomor Rekening
+      </button>
     </div>
-</div>
 
-<!-- Bootstrap Official Themes -->
-<div id="bs-themes">
-    <div class="container py-5 px-4">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="mb-3 mt-5">
-                    <i class="bi bi-droplet-fill fs-2 bg-info py-2 px-3 rounded-3 text-white"></i>
-                </div>
-
-                <h2 class="display-5">
-                    Make it yours with official Bootstrap Themes
-                </h2>
-
-                <p class="fs-5">
-                    Take Bootstrap to the next level with premium themes
-                    from the <a href="#">official Bootstrap Themes marketplace</a>.
-                    Themes are built on Bootstrap as their own extended
-                    frameworks, with new components and plugins.
-                </p>
-
-                <a class="icon-link icon-link-hover lead fw-semibold mb-5" href="#">
-                    Browse Bootstrap Themes
-                    <i class="bi bi-arrow-right mb-2"></i>
-                </a>
-            </div>
-
-            <div class="col-lg-6">
-                <img class="img-fluid"
-                     src="assets/images/bs-themes.png"
-                     alt="Bootstrap Themes">
-            </div>
+    <!-- Edit Panel -->
+    <div class="edit-panel" id="editPanel">
+      <h3><span>🛠️</span> Atur Nomor & Nama Penerima</h3>
+      <div class="input-grid">
+        <div class="form-group">
+          <label for="inputName">Nama Pemilik Rekening</label>
+          <input type="text" id="inputName" value="ADIK TERCINTA" placeholder="Nama Kamu">
         </div>
+        <div class="form-group">
+          <label for="inputBCA">Nomor Rekening BCA</label>
+          <input type="text" id="inputBCA" value="8290123456" placeholder="Nomor BCA">
+        </div>
+        <div class="form-group">
+          <label for="inputGopay">Nomor GoPay</label>
+          <input type="text" id="inputGopay" value="081234567890" placeholder="Nomor GoPay">
+        </div>
+        <div class="form-group">
+          <label for="inputDana">Nomor DANA</label>
+          <input type="text" id="inputDana" value="081234567890" placeholder="Nomor DANA">
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="inputShopee">Nomor ShopeePay</label>
+          <input type="text" id="inputShopee" value="081234567890" placeholder="Nomor ShopeePay">
+        </div>
+      </div>
     </div>
-</div>
 
-<!-- Footer -->
-<footer id="footer" class="container py-5 px-4">
-    <div class="row">
-        <div class="col-lg-3 mb-4">
-            <a href="#" class="d-inline-flex align-items-center text-dark text-decoration-none">
-                <img src="assets/images/logo-black.svg"
-                     alt="Bootstrap"
-                     width="40"
-                     height="32">
-            </a>
-            <p class="text-muted mt-2">
-                Designed and built with all the love in the world by the Bootstrap team.
-            </p>
+    <!-- Account Cards Grid -->
+    <div class="accounts-grid">
+      
+      <!-- BCA Card -->
+      <div class="account-card card-bca">
+        <div class="card-top">
+          <div class="provider-tag">
+            <div class="icon-pill">🏦</div>
+            <span>BCA</span>
+          </div>
+          <span class="card-badge">Bank Transfer</span>
         </div>
+        <div class="card-body">
+          <div class="number-display" id="dispBCA">8290123456</div>
+          <div class="name-display" id="dispName1">ADIK TERCINTA</div>
+        </div>
+        <button class="btn-copy" onclick="copyValue('dispBCA', 'Nomor Rekening BCA')">
+          <span>📋</span> Salin Nomor Rekening
+        </button>
+      </div>
 
-        <div class="col-6 col-lg-2 mb-4">
-            <h5>Links</h5>
-            <ul class="list-unstyled">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Docs</a></li>
-                <li><a href="#">Examples</a></li>
-                <li><a href="#">Themes</a></li>
-            </ul>
+      <!-- GoPay Card -->
+      <div class="account-card card-gopay">
+        <div class="card-top">
+          <div class="provider-tag">
+            <div class="icon-pill">💳</div>
+            <span>GoPay</span>
+          </div>
+          <span class="card-badge">E-Wallet</span>
         </div>
+        <div class="card-body">
+          <div class="number-display" id="dispGopay">081234567890</div>
+          <div class="name-display" id="dispName2">ADIK TERCINTA</div>
+        </div>
+        <button class="btn-copy" onclick="copyValue('dispGopay', 'Nomor GoPay')">
+          <span>📋</span> Salin Nomor GoPay
+        </button>
+      </div>
 
-        <div class="col-6 col-lg-2 mb-4">
-            <h5>Guides</h5>
-            <ul class="list-unstyled">
-                <li><a href="#">Getting started</a></li>
-                <li><a href="#">Starter template</a></li>
-                <li><a href="#">Webpack</a></li>
-            </ul>
+      <!-- DANA Card -->
+      <div class="account-card card-dana">
+        <div class="card-top">
+          <div class="provider-tag">
+            <div class="icon-pill">📱</div>
+            <span>DANA</span>
+          </div>
+          <span class="card-badge">E-Wallet</span>
         </div>
+        <div class="card-body">
+          <div class="number-display" id="dispDana">081234567890</div>
+          <div class="name-display" id="dispName3">ADIK TERCINTA</div>
+        </div>
+        <button class="btn-copy" onclick="copyValue('dispDana', 'Nomor DANA')">
+          <span>📋</span> Salin Nomor DANA
+        </button>
+      </div>
 
-        <div class="col-6 col-lg-2 mb-4">
-            <h5>Projects</h5>
-            <ul class="list-unstyled">
-                <li><a href="#">Bootstrap 5</a></li>
-                <li><a href="#">Bootstrap Icons</a></li>
-                <li><a href="#">Bootstrap Themes</a></li>
-            </ul>
+      <!-- ShopeePay Card -->
+      <div class="account-card card-shopeepay">
+        <div class="card-top">
+          <div class="provider-tag">
+            <div class="icon-pill">🛍️</div>
+            <span>ShopeePay</span>
+          </div>
+          <span class="card-badge">E-Wallet</span>
         </div>
+        <div class="card-body">
+          <div class="number-display" id="dispShopee">081234567890</div>
+          <div class="name-display" id="dispName4">ADIK TERCINTA</div>
+        </div>
+        <button class="btn-copy" onclick="copyValue('dispShopee', 'Nomor ShopeePay')">
+          <span>📋</span> Salin Nomor ShopeePay
+        </button>
+      </div>
 
-        <div class="col-6 col-lg-3 mb-4">
-            <h5>Community</h5>
-            <ul class="list-unstyled">
-                <li><a href="#">GitHub</a></li>
-                <li><a href="#">Twitter</a></li>
-                <li><a href="#">Slack</a></li>
-            </ul>
-        </div>
     </div>
-</footer>
 
+    <!-- Interactive Actions -->
+    <div class="interaction-card">
+      <h2>Sudah Berhasil Transfer?</h2>
+      <p>Klik tombol di bawah untuk klaim sertifikat cinta kasih dan doa restu adik:</p>
+      
+      <div class="button-group">
+        <button class="btn-celebrate" id="btnCelebrate">
+          <span>🎉</span> Udah Ditransfer Nih! ✨
+        </button>
+        <button class="btn-runaway" id="btnRunaway">
+          Nggak Mau 😜
+        </button>
+      </div>
+    </div>
 
+    <!-- Guarantee & Perks -->
+    <div class="terms-box">
+      <h4><span>🎁</span> Jaminan Khusus Buat Kakak</h4>
+      <ul class="terms-list">
+        <li><span>✨</span> <strong>Garansi Glowing 100%:</strong> Kakak didoakan makin mempesona & rezeki mengalir tiada henti.</li>
+        <li><span>🕊️</span> <strong>Anti Rungkad:</strong> Setiap rupiah bernilai pahala dan kebahagiaan adik tersayang.</li>
+        <li><span>🧸</span> <strong>Adik Nurut Seharian:</strong> Siap disuruh ambilin barang (syarat & ketentuan berlaku hihi).</li>
+      </ul>
+    </div>
+
+    <footer>
+      Dibuat dengan sepenuh hati & rasa sayang adik tercinta 💖
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastBox">
+    <span>✅</span> <span id="toastText">Nomor berhasil disalin!</span>
+  </div>
+
+  <script>
+    // Copy Function with Toast
+    function copyValue(elementId, label) {
+      const textToCopy = document.getElementById(elementId).innerText.trim();
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        showToast(`Berhasil salin ${label}: ${textToCopy} ✨`);
+      }).catch(() => {
+        // Fallback for older browsers
+        const temp = document.createElement("input");
+        document.body.appendChild(temp);
+        temp.value = textToCopy;
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        showToast(`Berhasil salin ${label}: ${textToCopy} ✨`);
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastBox');
+      const toastText = document.getElementById('toastText');
+      toastText.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+    }
+
+    // Toggle Settings Form
+    const btnToggleSettings = document.getElementById('btnToggleSettings');
+    const editPanel = document.getElementById('editPanel');
+
+    btnToggleSettings.addEventListener('click', () => {
+      editPanel.classList.toggle('active');
+      btnToggleSettings.innerHTML = editPanel.classList.contains('active') 
+        ? '<span>✕</span> Tutup Pengaturan' 
+        : '<span>✏️</span> Ubah Data / Nomor Rekening';
+    });
+
+    // Realtime Sync Form Inputs
+    const inputName = document.getElementById('inputName');
+    const inputBCA = document.getElementById('inputBCA');
+    const inputGopay = document.getElementById('inputGopay');
+    const inputDana = document.getElementById('inputDana');
+    const inputShopee = document.getElementById('inputShopee');
+
+    const dispNameList = [
+      document.getElementById('dispName1'),
+      document.getElementById('dispName2'),
+      document.getElementById('dispName3'),
+      document.getElementById('dispName4')
+    ];
+
+    inputName.addEventListener('input', (e) => {
+      const val = e.target.value.trim() || 'ADIK TERCINTA';
+      dispNameList.forEach(el => el.innerText = val);
+    });
+
+    inputBCA.addEventListener('input', (e) => {
+      document.getElementById('dispBCA').innerText = e.target.value.trim() || '8290123456';
+    });
+    inputGopay.addEventListener('input', (e) => {
+      document.getElementById('dispGopay').innerText = e.target.value.trim() || '081234567890';
+    });
+    inputDana.addEventListener('input', (e) => {
+      document.getElementById('dispDana').innerText = e.target.value.trim() || '081234567890';
+    });
+    inputShopee.addEventListener('input', (e) => {
+      document.getElementById('dispShopee').innerText = e.target.value.trim() || '081234567890';
+    });
+
+    // Confetti Celebration
+    const btnCelebrate = document.getElementById('btnCelebrate');
+    btnCelebrate.addEventListener('click', () => {
+      // Confetti burst
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 80,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 80,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+      }, 250);
+
+      showToast("Alhamdulillah! Makasih banyak kakakku yang paling baik & cantik! 🥰💖");
+    });
+
+    // Runaway Button logic
+    const btnRunaway = document.getElementById('btnRunaway');
+    const playfulTexts = [
+      "Yakin nggak mau? 🥺",
+      "Kakak terlalu baik buat nolak! 😜",
+      "Eitss gabisa diklik dong 😋",
+      "Tombol ini rusak khusus buat kakak! 💖",
+      "Transfer dikit aja atuh kak hihi 🎀"
+    ];
+    let runawayIndex = 0;
+
+    function dodgeButton() {
+      const randomX = (Math.random() - 0.5) * 220;
+      const randomY = (Math.random() - 0.5) * 120;
+      btnRunaway.style.transform = `translate(${randomX}px, ${randomY}px)`;
+      
+      runawayIndex = (runawayIndex + 1) % playfulTexts.length;
+      btnRunaway.innerText = playfulTexts[runawayIndex];
+    }
+
+    btnRunaway.addEventListener('mouseenter', dodgeButton);
+    btnRunaway.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      dodgeButton();
+    });
+    btnRunaway.addEventListener('click', dodgeButton);
+  </script>
 </body>
 </html>
